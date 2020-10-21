@@ -1,0 +1,24 @@
+<div class="border">
+  <div>
+    <button type="button" class="btn btn-warning btn-lg btn-block"><fa-icon [icon]="faPlusSquare"></fa-icon> Categoria</button>
+  </div>
+  <br>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Nome</th>
+        <th scope="col">Editar</th>
+        <th scope="col">Deletar</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let categoria of categorias">
+        <th scope="row">{{categoria.id}}</th>
+        <td>{{categoria.nome}}</td>
+        <td><a routerLink="editar"><fa-icon class="primary" [icon]="faEdit"></fa-icon></a></td>
+        <td><a routerLink="deletar"><fa-icon class="danger" [icon]="faTrashAlt"></fa-icon></a></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
