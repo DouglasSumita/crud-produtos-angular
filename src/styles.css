@@ -1,2 +1,24 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~bootstrap/dist/css/bootstrap.min.css';
+
+.btnNovo {
+  padding: 3px;
+  color: white;
+  background-color: green;
+}
+
+.btnIcon {
+  width: 50px;
+}
+
+.formProduto {
+  padding: 10px;
+}
+
+.titulo {
+  text-align: center;
+}
+
+.red {
+  color: red;
+}

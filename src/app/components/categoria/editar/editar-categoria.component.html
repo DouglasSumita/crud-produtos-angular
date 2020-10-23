@@ -1,0 +1,14 @@
+<div>
+  <form class="formProduto" #Form="ngForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label>Id:</label>
+      <input type="number" readonly name="id" [(ngModel)]="categoria.id" class="form-control" min="1" required/>
+    </div>
+    <div class="form-group">
+      <label>Nome:</label>
+      <input type="text" [(ngModel)]="categoria.nome" name="nome" class="form-control" required/>
+    </div>
+    <input type="submit" class="btn btn-primary">
+  </form>
+</div>
+

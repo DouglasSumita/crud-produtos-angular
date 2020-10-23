@@ -1,8 +1,9 @@
-<div class="border">
+<div>
   <div>
-    <button type="button" (click)="addProduto()" class="btn btn-warning btn-lg btn-block"><fa-icon [icon]="faPlusSquare"></fa-icon> Produto</button>
+    <button type="button" routerLink="novo" class="btn btn-lg btn-block btnNovo">
+      <fa-icon [icon]="faPlusSquare"></fa-icon> Novo
+    </button>
   </div>
-  <br>
   <table class="table table-striped">
     <thead>
       <tr>
@@ -10,6 +11,7 @@
         <th scope="col">Nome</th>
         <th scope="col">Descricao</th>
         <th scope="col">Preco</th>
+        <th scope="col">Categoria</th>
         <th scope="col">Editar</th>
         <th scope="col">Deletar</th>
       </tr>
@@ -20,8 +22,9 @@
         <td>{{produto.nome}}</td>
         <td>{{produto.descricao}}</td>
         <td>R$ {{produto.preco.toFixed(2)}}</td>
-        <td><a routerLink="editar"><fa-icon class="primary" [icon]="faEdit"></fa-icon></a></td>
-        <td><a routerLink="deletar"><fa-icon class="danger" [icon]="faTrashAlt"></fa-icon></a></td>
+        <td>{{produto.categoria.id}} - {{produto.categoria.nome}}</td>
+        <td><button type="button" routerLink="editar/{{produto.id}}" class="btn btn-warning btnIcon"><fa-icon [icon]="faEdit"></fa-icon></button></td>
+        <td><button type="button" (click)="deletar(produto)" class="btn btn-danger btnIcon"><fa-icon [icon]="faTrashAlt"></fa-icon></button></td>
       </tr>
     </tbody>
   </table>

@@ -1,0 +1,30 @@
+<div>
+  <form class="formProduto" #Form="ngForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label>Id:</label>
+      <input type="number" readonly name="id" [(ngModel)]="id" class="form-control" min="1" required/>
+    </div>
+    <div class="form-group">
+      <label>Nome:</label>
+      <input type="text" [(ngModel)]="nome" name="nome" class="form-control" required/>
+    </div>
+    <div class="form-group">
+      <label>Descricao:</label>
+      <input type="text" [(ngModel)]="descricao" name="descricao"  class="form-control" />
+    </div>
+    <div class="form-group">
+      <label>Preco:</label>
+      <input type="text" [(ngModel)]="preco" name="preco"  class="form-control" required/>
+    </div>
+    <div class="form-group">
+      <label>Categoria:</label>
+      <select class="form-control" name="categoria" [(ngModel)]="this.categoriaId">
+        <option *ngFor="let categoria of categorias" (selected)="categoria.id === this.categoriaId"
+          [value]="categoria.id">{{categoria.id}} - {{categoria.nome}}
+        </option>
+      </select>
+    </div>
+    <input type="submit" class="btn btn-primary">
+  </form>
+</div>
+

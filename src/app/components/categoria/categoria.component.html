@@ -1,24 +1,19 @@
-<div class="border">
-  <div>
-    <button type="button" class="btn btn-warning btn-lg btn-block"><fa-icon [icon]="faPlusSquare"></fa-icon> Categoria</button>
-  </div>
-  <br>
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th scope="col">Id</th>
-        <th scope="col">Nome</th>
-        <th scope="col">Editar</th>
-        <th scope="col">Deletar</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let categoria of categorias">
-        <th scope="row">{{categoria.id}}</th>
-        <td>{{categoria.nome}}</td>
-        <td><a routerLink="editar"><fa-icon class="primary" [icon]="faEdit"></fa-icon></a></td>
-        <td><a routerLink="deletar"><fa-icon class="danger" [icon]="faTrashAlt"></fa-icon></a></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+<button routerLink="novo" type="button" class="btn btn-lg btn-block btnNovo"><fa-icon [icon]="faPlusSquare"></fa-icon> Novo</button>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">Id</th>
+      <th scope="col">Nome</th>
+      <th scope="col">Editar</th>
+      <th scope="col">Deletar</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let categoria of categorias">
+      <th scope="row">{{categoria.id}}</th>
+      <td>{{categoria.nome}}</td>
+      <td><button routerLink="editar/{{categoria.id}}" class="btn btn-warning btnIcon"><fa-icon [icon]="faEdit"></fa-icon></button></td>
+      <td><button (click)="deletar(categoria)" class="btn btn-danger btnIcon"><fa-icon class="danger" [icon]="faTrashAlt"></fa-icon></button></td>
+    </tr>
+  </tbody>
+</table>
