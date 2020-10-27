@@ -1,4 +1,4 @@
-<div>
+<div *ngIf="categoria">
   <form class="formProduto" #Form="ngForm" (ngSubmit)="onSubmit()">
     <div class="form-group">
       <label>Id:</label>
@@ -8,7 +8,8 @@
       <label>Nome:</label>
       <input type="text" [(ngModel)]="categoria.nome" name="nome" class="form-control" required/>
     </div>
-    <input type="submit" class="btn btn-primary">
+    <input type="submit" class="btn btn-primary" value="Atualizar">
+    <input type="button" (click)="deletar(categoria?.id)" class="btn btn-danger" value="Deletar">
   </form>
 </div>
 

@@ -29,34 +29,35 @@ export class NovoProdutoComponent implements OnInit {
     private router: Router
   ) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.getCategorias();
     this.getProdutos();
 
-    this.id = this.produtoService.getIdLivre();
+    this.id = await this.produtoService.getIdLivre();
   }
 
   onSubmit(): void {
-    const produto: Produto = new Produto();
-    produto.setId(this.id);
-    produto.setNome(this.nome);
-    produto.setDescricao(this.descricao);
-    produto.setPreco(parseFloat(this.preco));
-    produto.setCategoria(this.getCategoria(parseInt(this.categoriaId)));
-    this.addProduto(produto);
+    const objProduto = {
+      nome: this.nome,
+      descricao: this.descricao,
+      preco: parseFloat(this.preco),
+      categoriaId: parseInt(this.categoriaId)
+    }
+
+    this.addProduto(objProduto);
     this.irParaPaginaDeProdutos();
   }
 
   getProdutos(): void {
-    this.produtos = this.produtoService.getProdutos();
+    this.produtoService.getProdutos().subscribe(p => this.produtos = p);
   }
 
   getCategorias(): void {
-    this.categorias = this.categoriaService.getCategorias();
+    this.categoriaService.getCategorias().subscribe(c => this.categorias = c);
   }
 
-  addProduto(produto: Produto): void {
-    this.produtoService.addProduto(produto);
+  addProduto(produto: Object): void {
+    this.produtoService.add(produto).subscribe();
   }
 
   async irParaPaginaDeProdutos() {

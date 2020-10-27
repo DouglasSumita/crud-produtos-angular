@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { faEdit, faTrashAlt, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 
-import { ProdutoService } from '../../services/produto/produto.service';
+import { Categoria } from '../../model/categoria';
 import { Produto } from '../../model/produto';
+import { ProdutoService } from '../../services/produto/produto.service';
+import { CategoriaService } from './../../services/categoria/categoria.service';
 
 @Component({
   selector: 'app-produto',
@@ -15,20 +17,35 @@ export class ProdutoComponent implements OnInit {
   faTrashAlt = faTrashAlt;
   faPlusSquare = faPlusSquare;
 
-  produtos: Produto[];
+  page: number = 1;
+  itemsPerPage: number = 10;
 
-  constructor(private produtoService: ProdutoService) { }
+  produtos: Produto[];
+  categorias: Categoria[];
+
+  constructor(
+    private produtoService: ProdutoService,
+    private categoriaService: CategoriaService
+  ) { }
 
   ngOnInit(): void {
-    this.getProdutos()
+    this.getCategorias();
   }
 
   getProdutos(): void {
-    this.produtos = this.produtoService.getProdutos();
+    this.produtoService.getProdutos().subscribe(p => this.produtos = this.produtoService.converteProdutosApiParaProdutosComponent(p, this.categorias));
   }
 
-  deletar(produto: Produto) {
-    this.produtos = this.produtos.filter(p => p.id != produto.id);
-    this.produtoService.deletar(produto.id);
+  getCategorias(): void {
+    this.categoriaService.getCategorias().subscribe((c) => {
+      this.categorias = c
+      this.getProdutos();
+    })
+  }
+
+  deletar(id: number) {
+    if (confirm(`Deletar produto id ${id}?`)) {
+      this.produtoService.deletar(id).subscribe(_ => this.getProdutos());
+    }
   }
 }

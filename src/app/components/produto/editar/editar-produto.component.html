@@ -1,16 +1,16 @@
-<div>
+<div *ngIf="produto">
   <form class="formProduto" #Form="ngForm" (ngSubmit)="onSubmit()">
     <div class="form-group">
       <label>Id:</label>
-      <input type="number" readonly name="id" [(ngModel)]="id" class="form-control" min="1" required/>
+      <input type="number" readonly name="id" [(ngModel)]="produto.id" class="form-control" min="1" required/>
     </div>
     <div class="form-group">
       <label>Nome:</label>
-      <input type="text" [(ngModel)]="nome" name="nome" class="form-control" required/>
+      <input type="text" [(ngModel)]="produto.nome" name="nome" class="form-control" required/>
     </div>
     <div class="form-group">
       <label>Descricao:</label>
-      <input type="text" [(ngModel)]="descricao" name="descricao"  class="form-control" />
+      <input type="text" [(ngModel)]="produto.descricao" name="descricao"  class="form-control" />
     </div>
     <div class="form-group">
       <label>Preco:</label>
@@ -24,7 +24,8 @@
         </option>
       </select>
     </div>
-    <input type="submit" class="btn btn-primary">
+    <input type="submit" class="btn btn-primary" value="Atualizar">
+    <input type="button" (click)="deletar(produto?.id)" class="btn btn-danger" value="Deletar">
   </form>
 </div>
 

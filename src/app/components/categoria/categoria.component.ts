@@ -12,9 +12,14 @@ import { ProdutoService } from './../../services/produto/produto.service';
 })
 export class CategoriaComponent implements OnInit {
 
+/* Icon */
   faEdit = faEdit;
   faTrashAlt = faTrashAlt;
   faPlusSquare = faPlusSquare;
+
+/* Paginate */
+  page: number = 1;
+  itemsPerPage: number = 10;
 
   categorias: Categoria[] = [];
 
@@ -28,17 +33,20 @@ export class CategoriaComponent implements OnInit {
   }
 
   getCategorias(): void {
-    this.categorias = this.categoriaService.getCategorias();
+    this.categoriaService.getCategorias().subscribe(c => this.categorias = c);
   }
 
-  deletar(categoria: Categoria): void {
-    const produtos = this.produtoService.getProdutos();
-
-    if (produtos.find(p => p.categoria.id === categoria.id)) {
-      alert('Existe produtos cadastrados com a categoria, não sera possivel deletar!');
-    } else {
-      this.categorias = this.categorias.filter(c => c.id !== categoria.id);
-      this.categoriaService.deletar(categoria.id);
+  deletar(id: number): void {
+    if (confirm(`Deletar categoria id ${id}?`)) {
+      this.produtoService.getProdutos()
+        .subscribe(produtos => {
+          if (produtos.find(p => p.categoriaId === id)) {
+            alert(`Existe produtos cadastrados com a categoria id ${id}, não sera possivel deletar!`);
+          } else {
+            this.categoriaService.deletar(id).subscribe(_ => this.getCategorias());
+          }
+        });
     }
   }
+
 }

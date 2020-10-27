@@ -17,11 +17,9 @@ export class EditarProdutoComponent implements OnInit {
   @Input() produto: Produto;
 
   id: number;
-  nome: string;
-  descricao: string;
   preco: string;
   categorias: Categoria[];
-  categoriaId: number;
+  categoriaId;
 
   constructor(
     private produtoService: ProdutoService,
@@ -31,15 +29,13 @@ export class EditarProdutoComponent implements OnInit {
     private router: Router,
   ) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.id = +this.activatedRoute.snapshot.paramMap.get('id');
-    this.getProduto();
-
-    if (!this.id || !this.produto) {
+    try {
+      await this.getCategorias();
+    } catch (e) {
+      console.log(e.message);
       this.irParaPaginaDeProdutos();
-    } else {
-      this.carregaAtributosProduto();
-      this.getCategorias();
     }
   }
 
@@ -48,33 +44,49 @@ export class EditarProdutoComponent implements OnInit {
   }
 
   getProduto(): void {
-    this.produto = this.produtoService.getProduto(this.id);
+    this.produtoService.getProduto(this.id)
+      .subscribe(p => {
+        this.produto = this.produtoService.converteProdutoApiParaProdutoComponent(p, this.categorias)
+        this.carregaAtributosProduto();
+      });
   }
 
-  getCategorias(): void {
-    this.categorias = this.categoriaService.getCategorias();
+  async getCategorias() {
+    await this.categoriaService.getCategorias().subscribe(c => {
+      this.categorias = c
+      this.getProduto();
+    });
   }
 
   carregaAtributosProduto(): void {
-    this.nome = this.produto.nome;
-    this.descricao = this.produto.descricao;
     this.preco = this.produto.preco.toString();
     this.categoriaId = this.produto.categoria.id;
   }
 
   onSubmit(): void {
-    this.gravarProduto(this.produto);
+    this.atualizarProduto();
     this.irParaPaginaDeProdutos();
   }
 
-  gravarProduto(produto: Produto) {
-    this.produto.nome = this.nome;
-    this.produto.descricao = this.descricao;
-    this.produto.preco = parseFloat(this.preco);
-    this.produto.categoria = this.categorias.find(categoria => categoria.id == this.categoriaId);
+  atualizarProduto() {
+    const objProduto = {
+        id: this.produto.id,
+        nome: this.produto.nome,
+        descricao: this.produto.descricao,
+        preco: parseFloat(this.preco),
+        categoriaId: parseInt(this.categoriaId)
+    }
+    this.produtoService.atualizar(objProduto).subscribe();
   }
 
   irParaPaginaDeProdutos(): void {
     this.router.navigate(['']);
+  }
+
+  deletar(id: number) {
+    if (confirm(`Deletar produto id ${id}?`)) {
+      this.produtoService.deletar(id).subscribe();
+      this.irParaPaginaDeProdutos();
+    }
   }
 }

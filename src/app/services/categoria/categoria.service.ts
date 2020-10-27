@@ -1,48 +1,98 @@
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
 
 import { Categoria } from './../../model/categoria';
+import { NumeroUtil } from './../../../util/numero';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CategoriaService {
 
-  categorias: Categoria[] = [];
-
-  constructor() { }
-
-  getCategorias(): Categoria[] {
-    if (!this.categorias.length) {
-      this.categorias.push(new Categoria(1, 'Refrigerantes'));
-      this.categorias.push(new Categoria(2, 'Hamburgueres'));
-    }
-    return this.categorias;
+  urlApi = 'api/categorias';
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Content-type': 'Application/json'
+    })
   }
 
-  deletar(categoria: number | Categoria): void {
-    const id = (typeof categoria === 'number') ? categoria : categoria.id;
-    this.categorias = this.categorias.filter(categoria => categoria.id === id);
+  constructor(
+    private http: HttpClient
+  ) { }
+
+  getCategorias(): Observable<Categoria[]> {
+    return this.http.get<Categoria[]>(this.urlApi)
+      .pipe(
+        tap(_ => console.log('Buscando categorias')),
+        catchError(this.handleError<Categoria[]>('getCategorias', []))
+      )
   }
 
-  gravar(categoria: Categoria): void {
-    this.categorias.forEach((c => {
-      if (c.id === categoria.id) {
-        c = categoria;
-      }
-    }))
+  getCategoria(id: number): Observable<Categoria> {
+    return this.http.get<Categoria>(`${this.urlApi}/${id}`)
+      .pipe(
+        tap(_ => console.log(`Buscando categoria id ${id}`)),
+        catchError(this.handleError<Categoria>('getCategoria'))
+      )
   }
 
-  getIdLivre(): number {
-    const categorias: Categoria[] = this.categorias;
-    let nextId: number = 1;
-
-    while (categorias.find(c => c.id === nextId)) {
-      nextId++;
-    }
-    return nextId;
+  atualizar(categoria: Categoria): Observable<Categoria> {
+    return this.http.put<Categoria>(`${this.urlApi}/${categoria.id}`, categoria, this.httpOptions)
+      .pipe(
+        tap(_ => console.log(`Atualizando categoria id ${categoria.id}`)),
+        catchError(this.handleError<Categoria>('putCategoria'))
+      );
   }
 
-  add(categoria: Categoria): void {
-    this.categorias.push(categoria);
+  deletar(id: number): Observable<Categoria> {
+    return this.http.delete<Categoria>(`${this.urlApi}/${id}`)
+      .pipe(
+        tap(_ => console.log(`Deletando produto id ${id}`)),
+        catchError(this.handleError<Categoria>('deleteCategoria'))
+      );
   }
+
+  add(categoria: Categoria): Observable<Categoria> {
+    return this.http.post<Categoria>(this.urlApi, categoria, this.httpOptions)
+      .pipe(
+        tap(_ => console.log(`Adicionando categoria`)),
+        catchError(this.handleError<Categoria>('postCategoria'))
+      )
+  }
+  async getIdLivre(): Promise<number> {
+    let idLivre: number;
+    await this.getCategorias()
+      .toPromise()
+      .then(categorias => {
+        idLivre = 1;
+        if (categorias.length) {
+          idLivre = categorias.map(p => p.id)
+            .sort((a, b) => NumeroUtil.comparar(a, b))
+            .reverse()[0] + 1;
+        }
+      })
+      .catch(e => {
+        console.error(e)
+      });
+
+    return idLivre;
+  }
+
+  private handleError<T>(operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+
+      // TODO: send the error to remote logging infrastructure
+      console.error(error); // log to console instead
+
+      // TODO: better job of transforming error for user consumption
+      console.log(`${operation} failed: ${error.message}`);
+
+      // Let the app keep running by returning an empty result.
+      return of(result as T);
+
+    };
+  }
+
 }

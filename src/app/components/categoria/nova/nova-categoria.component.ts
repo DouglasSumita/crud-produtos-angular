@@ -19,18 +19,19 @@ export class NovaCategoriaComponent implements OnInit {
     private router: Router
   ) { }
 
-  ngOnInit(): void {
-    if (!this.categorias) {
-      this.categorias = this.categoriaService.getCategorias();
-    }
+  async ngOnInit() {
+    this.categoriaService.getCategorias().subscribe(c => this.categorias = c);
     this.categoria = new Categoria();
-    this.categoria.setId(this.categoriaService.getIdLivre());
+    this.categoria.setId(await this.categoriaService.getIdLivre());
     this.categoria.setNome('');
   }
 
   onSubmit(): void {
-    this.categoriaService.add(this.categoria);
-    this.irParaPaginaDeCategorias();
+    this.addCategoria();
+  }
+
+  addCategoria(): void {
+    this.categoriaService.add(this.categoria).subscribe(_ => this.irParaPaginaDeCategorias());
   }
 
   irParaPaginaDeCategorias(): void {

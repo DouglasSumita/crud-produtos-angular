@@ -1,4 +1,4 @@
-<div>
+<div *ngIf="categorias && produtos">
   <div>
     <button type="button" routerLink="novo" class="btn btn-lg btn-block btnNovo">
       <fa-icon [icon]="faPlusSquare"></fa-icon> Novo
@@ -17,17 +17,18 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let produto of produtos">
+      <tr *ngFor="let produto of produtos | paginate: { itemsPerPage: itemsPerPage, currentPage: page }">
         <th scope="row">{{produto.id}}</th>
         <td>{{produto.nome}}</td>
         <td>{{produto.descricao}}</td>
         <td>R$ {{produto.preco.toFixed(2)}}</td>
         <td>{{produto.categoria.id}} - {{produto.categoria.nome}}</td>
         <td><button type="button" routerLink="editar/{{produto.id}}" class="btn btn-warning btnIcon"><fa-icon [icon]="faEdit"></fa-icon></button></td>
-        <td><button type="button" (click)="deletar(produto)" class="btn btn-danger btnIcon"><fa-icon [icon]="faTrashAlt"></fa-icon></button></td>
+        <td><button type="button" (click)="deletar(produto?.id)" class="btn btn-danger btnIcon"><fa-icon [icon]="faTrashAlt"></fa-icon></button></td>
       </tr>
     </tbody>
   </table>
+  <pagination-controls *ngIf="produtos.length > itemsPerPage" (pageChange)="page = $event"></pagination-controls>
 </div>
 
 
